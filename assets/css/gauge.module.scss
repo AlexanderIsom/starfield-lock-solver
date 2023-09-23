@@ -1,0 +1,26 @@
+.key {
+	flex: 1 1 calc(25% - 10px);
+	max-width: 25%;
+	box-sizing: border-box;
+	padding: 1% 2%;
+	color: white;
+	text-align: center;
+}
+
+.solutionKey {
+	flex: 0 0 calc(25%);
+	max-width: 25%;
+	min-width: 200px;
+	padding: 1% 2%;
+	color: white;
+	text-align: center;
+}
+
+.keysvg {
+	overflow: visible;
+}
+
+.lock {
+	width: 100%;
+	height: 100%;
+}

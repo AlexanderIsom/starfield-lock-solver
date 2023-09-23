@@ -1,0 +1,39 @@
+.keyGrid {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	grid-template-rows: 1fr;
+	gap: 0px 0px;
+	grid-template-areas:
+		"lock keys";
+
+	gap: 10px;
+}
+
+.difficulty {
+	grid-area: header;
+	font-weight: 700;
+	font-size: 24px;
+}
+
+.lock {
+	grid-area: lock;
+}
+
+.keys {
+	grid-area: keys;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: left;
+	align-content: center;
+}
+
+.solve {
+	grid-area: solve;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+body {
+	background-color: #13161e;
+}

@@ -1,19 +1,27 @@
 <template>
 	<div>
-		<div class="keyGrid">
-			<div class="lock">
-				<Lock />
-			</div>
-			<div class="keys">
-				<component v-for="comp in items" :key="comp.id" :is="Key" v-bind="{ id: comp.id }"></component>
+		<div class="flex flex-col">
+			<h1 class="text-primary-500 dark:text-primary-400 justify-center text-center text-4xl font-bold">
+				Starfield lockpick solver</h1>
+			<h2 class="text-gray-900 dark:text-white justify-center text-center text-xl font-bold">Solve
+				any lockpick in Starfield!</h2>
+			<div class="justify-center items-center self-center">
+				<UButton icon="i-material-symbols-arrow-left-alt-rounded" @click="decrease" />
+				<UButton icon="i-material-symbols-arrow-right-alt-rounded" @click="increase" />
 			</div>
 		</div>
-	</div>
-	<div>
-		<button v-on:click="increase" class="text-white">increase</button>
-	</div>
-	<div>
-		<button v-on:click="decrease" class="text-white">decrease</button>
+
+		<div>
+			<div class=" keyGrid">
+				<div class="lock">
+					<Lock />
+				</div>
+				<div class="keys">
+					<component v-for="comp in items" :key="comp.id" :is="Key" v-bind="{ id: comp.id }"></component>
+				</div>
+			</div>
+		</div>
+
 	</div>
 </template>
 
@@ -39,5 +47,5 @@ const decrease = () => {
 </script>
 
 <style lang="scss">
-@use "~/assets/css/index.scss"
+@use "~/assets/css/index.scss";
 </style>

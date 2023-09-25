@@ -2,11 +2,12 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   pages: true,
-  css: ['~/assets/css/main.css'],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
+  css: ['~/assets/css/global.css'],
+  modules: ['@nuxt/ui'],
+  colorMode: {
+    preference: 'system'
   },
+  ui: {
+    icons: ['material-symbols']
+  }
 })

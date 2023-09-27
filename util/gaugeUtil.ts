@@ -56,3 +56,38 @@ function polarToCartesian(
 		y: centerY + radius * Math.sin(angleInRadians),
 	};
 }
+
+export class gauge {
+	private index: number;
+	private pins: Array<number>
+	constructor(index: number) {
+		this.index = index;
+		this.pins = new Array<number>;
+	}
+
+	flipPin(value: number) {
+		const existingIndex = this.pins.findIndex(v => v === value)
+		if (existingIndex >= 0) {
+			this.pins.splice(existingIndex, 1)
+		} else {
+			this.pins.push(value)
+			this.pins = this.pins.sort((a, b) => a - b)
+		}
+	}
+
+	getFirstPin() {
+		return this.pins[0]
+	}
+
+	isPinActive(id: number) {
+		return this.pins.includes(id);
+	}
+
+	getPins() {
+		return this.pins
+	}
+
+	getIndex() {
+		return this.index;
+	}
+}

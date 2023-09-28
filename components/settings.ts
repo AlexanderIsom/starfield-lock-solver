@@ -5,7 +5,13 @@ const maxKeyCount = 12;
 const maxLockLayerCount = 4;
 export const difficultyLevel = ref(0);
 
-export const store = reactive({
+interface storeProps {
+	segments: number,
+	lock: Array<gauge>,
+	keys: Array<gauge>
+}
+
+export const store = reactive<storeProps>({
 	segments: 32,
 	lock: Array.from({ length: maxLockLayerCount }, (_, index) => new gauge(index)),
 	keys: Array.from({ length: maxKeyCount }, (_, index) => new gauge(index)),

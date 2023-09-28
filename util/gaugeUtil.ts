@@ -60,9 +60,11 @@ function polarToCartesian(
 export class gauge {
 	private index: number;
 	private pins: Array<number>
+	private used: boolean
 	constructor(index: number) {
 		this.index = index;
 		this.pins = new Array<number>;
+		this.used = false;
 	}
 
 	flipPin(value: number) {
@@ -73,6 +75,14 @@ export class gauge {
 			this.pins.push(value)
 			this.pins = this.pins.sort((a, b) => a - b)
 		}
+	}
+
+	setUsed(value: boolean) {
+		this.used = value;
+	}
+
+	isUsed() {
+		return this.used;
 	}
 
 	getFirstPin() {

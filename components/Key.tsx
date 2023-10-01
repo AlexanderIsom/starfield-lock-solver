@@ -5,7 +5,9 @@ import styles from "../assets/css/gauge.module.scss"
 import { describeArc } from '~/util/gaugeUtil'
 
 interface Props {
-	index: number
+	index: number,
+	offset:number,
+	clickable:boolean,
 }
 
 const ACTIVE_OPACITY = 1
@@ -25,17 +27,25 @@ export default defineComponent({
 			type: Number as PropType<number>,
 			default: 0
 		},
+		offset:{
+			type: Number as PropType<number>,
+			default:0
+		},
+		clickable:{
+			type: Boolean as PropType<boolean>,
+			default:true
+		}
 	},
 
 
 	render: (props: Props) => {
 		const key = store.keys[props.index];
-		const disabled = props.index >= Math.max((difficultyLevel.value + 1) * 3, 4);
+		const disabled = props.index >= Math.max((difficultyLevel.value + 1) * 3, 4) || props.clickable === false;
 
 		function renderSegments() {
 			const segments: JSX.Element[] = [];
 			for (let i = 0; i < segmentCount; i++) {
-				const startAngle = i * (segmentDegree + gapDegree) - 11.25 / 2 + gapDegree / 2;
+				const startAngle = (i + props.offset) * (segmentDegree + gapDegree) - 11.25 / 2 + gapDegree / 2;
 				const endAngle = startAngle + segmentDegree;
 				const doesSegmentExist = (key.isPinActive(i));
 

@@ -31,6 +31,8 @@
 			<UButton class="text-xl" color="emerald" variant="outline" @click="startSolve">Solve</UButton>
 		</UButtonGroup>
 	</div>
+
+	<Solution :isOpen="isModalOpen" :onClose="closeModal"/>
 </template>
 
 <script setup>
@@ -40,6 +42,7 @@ import { difficulty } from "~/util/difficultyUtil"
 import solve from "~/util/solve"
 
 const items = store.keys;
+const isModalOpen = ref(false);
 
 const increase = () => {
 	increaseLayerCount();
@@ -50,7 +53,12 @@ const decrease = () => {
 }
 
 const startSolve = () => {
-	solve();
+	// solve();
+	isModalOpen.value = true;
+}
+
+const closeModal=()=>{
+	isModalOpen.value = false;
 }
 
 </script>

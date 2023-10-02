@@ -33,6 +33,12 @@ export function updateKey(id: number, index: number) {
 	}
 }
 
+export function resetLocksAndKeys() {
+	console.log("reset")
+	store.lock = Array.from({ length: maxLockLayerCount }, (_, index) => new gauge(index));
+	store.keys = Array.from({ length: maxKeyCount }, (_, index) => new gauge(index));
+}
+
 export function increaseLayerCount() {
 	difficultyLevel.value = (difficultyLevel.value + 1) % 4
 }

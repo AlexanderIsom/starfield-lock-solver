@@ -1,17 +1,17 @@
 import { store, difficultyLevel } from "~/components/settings";
 import { gauge } from "./gaugeUtil";
 
-interface validKeyWithOffset {
+export interface validKeyWithOffset {
 	key: gauge,
 	validPositions: Array<number>
 }
 
-interface finalKey {
+export interface finalKey {
 	key: gauge,
 	offset: number,
 }
 
-export default function Solve(): [boolean, Array<string>, Map<gauge, Array<finalKey>>?] {
+export default function Solve(): [boolean, Array<string>, Array<finalKey>?] {
 	const difficulty = difficultyLevel.value + 1;
 	const locksToUse = store.lock.slice(0, Math.max(2, difficulty)) as Array<gauge>
 	const keysToUse = store.keys.slice(0, Math.max(4, difficulty * 3)) as Array<gauge>
@@ -33,6 +33,7 @@ export default function Solve(): [boolean, Array<string>, Map<gauge, Array<final
 	}
 
 	for (const key of keysToUse) {
+		key.setUsed(false);
 		if (key.getPins().length === 0) {
 			invalid = true;
 			if (keysWithMissingPins !== "") {
@@ -71,12 +72,21 @@ export default function Solve(): [boolean, Array<string>, Map<gauge, Array<final
 		}
 	}
 
-	const completedLock: Map<gauge, Array<finalKey>> = new Map<gauge, Array<finalKey>>();
+	var completedLock: Array<finalKey> = new Array<finalKey>();
+
+	var failed = false;
 
 	validKeysForLock.forEach((validKeys, lock) => {
 		const [success, keys] = bruteForceKeys(lock.getPins(), validKeys)
-		completedLock.set(lock, keys);
+		if (!success) {
+			failed = true;
+		}
+		completedLock = completedLock.concat(keys);
 	});
+
+	if (failed) {
+		return [false, ["No solution found please try again"]]
+	}
 
 	return [true, [], completedLock]
 }
@@ -111,7 +121,7 @@ function bruteForceKeys(remainingPins: Array<number>, remainingKeys: Array<valid
 		if (!validKey.key.isUsed()) {
 			const [success, keys] = checkKeyOffsets(validKey);
 			if (success) {
-				return [true, keys]
+				return [true, keys.reverse()]
 			}
 		}
 	}

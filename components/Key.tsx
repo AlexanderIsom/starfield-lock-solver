@@ -6,8 +6,9 @@ import { describeArc } from '~/util/gaugeUtil'
 
 interface Props {
 	index: number,
-	offset:number,
-	clickable:boolean,
+	offset: number,
+	clickable: boolean,
+	ignoreStyle: boolean,
 }
 
 const ACTIVE_OPACITY = 1
@@ -27,20 +28,24 @@ export default defineComponent({
 			type: Number as PropType<number>,
 			default: 0
 		},
-		offset:{
+		offset: {
 			type: Number as PropType<number>,
-			default:0
+			default: 0
 		},
-		clickable:{
+		clickable: {
 			type: Boolean as PropType<boolean>,
-			default:true
+			default: true
+		},
+		ignoreStyle: {
+			type: Boolean as PropType<boolean>,
+			default: false
 		}
 	},
 
 
 	render: (props: Props) => {
 		const key = store.keys[props.index];
-		const disabled = props.index >= Math.max((difficultyLevel.value + 1) * 3, 4) || props.clickable === false;
+		const disabled = props.index >= Math.max((difficultyLevel.value + 1) * 3, 4);
 
 		function renderSegments() {
 			const segments: JSX.Element[] = [];
@@ -60,10 +65,10 @@ export default defineComponent({
 						fill={'#bddfd5'}
 						opacity={opacity}
 						onClick={() => {
-							if (disabled) return;
+							if (disabled || !props.clickable) return;
 							key.flipPin(i);
 						}}
-						style={{ cursor: disabled ? 'auto' : 'pointer' }}
+						style={{ cursor: disabled || !props.clickable ? 'auto' : 'pointer' }}
 					/>
 				);
 			}
@@ -71,7 +76,7 @@ export default defineComponent({
 		}
 
 		return (
-			<div class={styles.key}>
+			<div class={props.ignoreStyle === true ? styles.solutionKey : styles.key}>
 				<svg class={styles.keysvg} viewBox="-100 -100 200 200">
 					{renderSegments()}
 					<text x="0" y="0" fill={disabled ? "black" : "white"} text-anchor="middle" dominant-baseline="middle" font-size="32">

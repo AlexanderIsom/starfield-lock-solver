@@ -32,7 +32,8 @@
 		</UButtonGroup>
 	</div>
 
-	<Solution :isOpen="isModalOpen" :onClose="closeModal"/>
+	<Solution :isOpen="isSolutionModalOpen" :onClose="closeSolutionModal" />
+	<ErrorMessage :isOpen="isErrorMessageModalOpen" :messages="ErrorMessageRef" :onClose="closeErrorMessageModal" />
 </template>
 
 <script setup>
@@ -42,7 +43,9 @@ import { difficulty } from "~/util/difficultyUtil"
 import solve from "~/util/solve"
 
 const items = store.keys;
-const isModalOpen = ref(false);
+const isSolutionModalOpen = ref(false);
+const isErrorMessageModalOpen = ref(false);
+const ErrorMessageRef = ref([]);
 
 const increase = () => {
 	increaseLayerCount();
@@ -53,12 +56,24 @@ const decrease = () => {
 }
 
 const startSolve = () => {
-	// solve();
-	isModalOpen.value = true;
+	const [success, ErrorMessages, result] = solve();
+
+	console.log(ErrorMessages)
+
+	if (!success) {
+		ErrorMessageRef.value = ErrorMessages;
+		isErrorMessageModalOpen.value = true;
+		return;
+	}
+	// isSolutionModalOpen.value = true;
 }
 
-const closeModal=()=>{
-	isModalOpen.value = false;
+const closeSolutionModal = () => {
+	isSolutionModalOpen.value = false;
+}
+
+const closeErrorMessageModal = () => {
+	isErrorMessageModalOpen.value = false;
 }
 
 </script>

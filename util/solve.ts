@@ -11,13 +11,33 @@ interface finalKey {
 	offset: number,
 }
 
-const completedLock: Map<gauge, Array<finalKey>> = new Map<gauge, Array<finalKey>>();
-
-export default function Solve() {
+export default function Solve(): [boolean, Array<string>, Map<gauge, Array<finalKey>>?] {
 	const difficulty = difficultyLevel.value + 1;
 	const locksToUse = store.lock.slice(0, Math.max(2, difficulty)) as Array<gauge>
 	const keysToUse = store.keys.slice(0, Math.max(4, difficulty * 3)) as Array<gauge>
 	const validKeysForLock: Map<gauge, Array<validKeyWithOffset>> = new Map<gauge, Array<validKeyWithOffset>>();
+
+	var errorMessage: Array<string> = new Array<string>();
+	var invalid = false;
+
+	for (const lock of locksToUse) {
+		if (lock.getPins().length === 0) {
+			invalid = true;
+			errorMessage.push(`lock layer ${lock.getIndex() + 1} does not have any cutouts, please add at least 1 cutout`)
+		}
+	}
+
+	for (const key of keysToUse) {
+		if (key.getPins().length === 0) {
+			invalid = true;
+			errorMessage.push(`key ${key.getIndex() + 1} does not have any pins, please add at least 1 pin`)
+		}
+	}
+
+	if (invalid) {
+		return [false, errorMessage]
+	}
+
 	for (const lock of locksToUse) {
 		for (const key of keysToUse) {
 			const validOffsets = []
@@ -37,12 +57,15 @@ export default function Solve() {
 			}
 		}
 	}
-	console.log(validKeysForLock)
-	// go through each lock until all the valid keys complete the lock, then go to the next layer, if the layer fails then re do with new keys
+
+	const completedLock: Map<gauge, Array<finalKey>> = new Map<gauge, Array<finalKey>>();
 
 	validKeysForLock.forEach((validKeys, lock) => {
-		console.log(toRaw(bruteForceKeys(lock.getPins(), validKeys)))
+		const [success, keys] = bruteForceKeys(lock.getPins(), validKeys)
+		completedLock.set(lock, keys);
 	});
+
+	return [true, [], completedLock]
 }
 
 function DoesFit(arr1: Array<number>, arr2: Array<number>): boolean {

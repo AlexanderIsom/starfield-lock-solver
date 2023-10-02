@@ -19,20 +19,33 @@ export default function Solve(): [boolean, Array<string>, Map<gauge, Array<final
 
 	var errorMessage: Array<string> = new Array<string>();
 	var invalid = false;
+	var locksWithMissingCutputs: string = "";
+	var keysWithMissingPins: string = "";
 
 	for (const lock of locksToUse) {
 		if (lock.getPins().length === 0) {
 			invalid = true;
-			errorMessage.push(`lock layer ${lock.getIndex() + 1} does not have any cutouts, please add at least 1 cutout`)
+			if (locksWithMissingCutputs !== "") {
+				locksWithMissingCutputs += ", "
+			}
+			locksWithMissingCutputs += `${lock.getIndex() + 1}`
 		}
 	}
 
 	for (const key of keysToUse) {
 		if (key.getPins().length === 0) {
 			invalid = true;
-			errorMessage.push(`key ${key.getIndex() + 1} does not have any pins, please add at least 1 pin`)
+			if (keysWithMissingPins !== "") {
+				keysWithMissingPins += ", "
+			}
+			keysWithMissingPins += `${key.getIndex() + 1}`
 		}
 	}
+
+	const lockMessage = "lock layers: " + locksWithMissingCutputs + " are missing cutouts, please add at least 1 cutout per layer"
+	const keyMessage = "keys: " + keysWithMissingPins + " are missing pins, please add at least 1 pin per key"
+
+	errorMessage.push(lockMessage, keyMessage)
 
 	if (invalid) {
 		return [false, errorMessage]

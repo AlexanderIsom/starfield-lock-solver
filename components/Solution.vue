@@ -9,18 +9,17 @@ const props = defineProps<{
 }>();
 </script>
 <template>
-  <UModal v-model="props.isOpen" prevent-close :ui="{ body: { base: 'w-full' } }">
-    <div>hello</div>
-    <!-- <UCard>
+  <UModal v-model="props.isOpen" prevent-close :ui="{ width: 'sm:max-w-7xl', ring: '', margin: 'm-8' }">
+    <UCard>
       <template #header>
         <div class="flex items-end justify-center">
           Solution
         </div>
       </template>
       <div class="flex justify-center gap-10 flex-wrap">
-        <div v-for=" key  in  solution " class="text-center">
-          turn key {{ key.key.getIndex() + 1 }} {{ key.offset
-            < 0 ? "left" : "right" }} {{ Math.abs(key.offset) }} times <Key class="mt-4" :index="key.key.getIndex()"
+        <div v-for=" (key, index)  in  solution " class="text-center">
+          {{ index + 1 }}: turn key {{ key.key.getIndex() + 1 }} {{ key.offset
+            < 0 ? "left" : "right" }} {{ Math.abs(key.offset) }} <Key class="mt-4" :index="key.key.getIndex()"
             :offset="key.offset" :clickable="false" :ignoreStyle="true" />
         </div>
       </div>
@@ -30,6 +29,6 @@ const props = defineProps<{
             Close</UButton>
         </div>
       </template>
-    </UCard> -->
+    </UCard>
   </UModal>
 </template>

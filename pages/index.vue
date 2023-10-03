@@ -63,7 +63,6 @@ const reset = () => {
 }
 
 const startSolve = () => {
-	// solve();
 	const [success, ErrorMessages, result] = solve();
 
 	if (!success) {
@@ -72,7 +71,6 @@ const startSolve = () => {
 		return;
 	}
 	solutionKeys.value = result;
-	console.log("solved", result)
 	isSolutionModalOpen.value = true;
 }
 

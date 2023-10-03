@@ -60,7 +60,6 @@ export default function Solve(): [boolean, Array<string>, Array<finalKey>?] {
 			for (const position of lock.getPins()) {
 				let offset = position - firstPinPosition
 				const newKey = key.getPins().map(v => (v + offset) % 32).sort((a, b) => a - b)
-				console.log(key.getIndex(), newKey)
 				if (DoesFit(newKey, lock.getPins())) {
 					validOffsets.push(offset);
 				}
@@ -86,8 +85,6 @@ function DoesFit(arr1: Array<number>, arr2: Array<number>): boolean {
 
 function bruteForceKeys(locksWithValidKeys: Array<{ lock: gauge, validKeys: Array<validKeyWithOffset> }>, index: number, remainingPins: Array<number>): [boolean, Array<finalKey>] {
 	const validKeys = locksWithValidKeys[index].validKeys;
-	// console.log("REMAINING", remainingPins)
-	// console.log("KEYS", validKeys)
 
 	function checkKeyOffsets(validKey: validKeyWithOffset): [boolean, Array<finalKey>] {
 		for (const offset of validKey.validPositions) {
@@ -96,7 +93,6 @@ function bruteForceKeys(locksWithValidKeys: Array<{ lock: gauge, validKeys: Arra
 				var remainingLockPins = remainingPins.filter(l => !shiftedKey.includes(l));
 				var nextIndex = index
 				if (remainingLockPins.length === 0) {
-					// console.log("MOVING TO NEW LAYER")
 					nextIndex += 1
 					if (locksWithValidKeys[nextIndex] === undefined) {
 						return [true, [{ key: validKey.key, offset: offset } as finalKey]]
@@ -117,7 +113,6 @@ function bruteForceKeys(locksWithValidKeys: Array<{ lock: gauge, validKeys: Arra
 
 	for (const validKey of validKeys) {
 		if (!validKey.key.isUsed()) {
-			// console.log("TESTING KEY", validKey.key.getIndex())
 			const [success, keys] = checkKeyOffsets(validKey);
 			if (success) {
 				return [true, keys]

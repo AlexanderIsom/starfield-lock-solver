@@ -15,7 +15,6 @@ export default function Solve(): [boolean, Array<string>, Array<finalKey>?] {
 	const difficulty = difficultyLevel.value + 1;
 	const locksToUse = store.lock.slice(0, Math.max(2, difficulty)) as Array<gauge>
 	const keysToUse = store.keys.slice(0, Math.max(4, difficulty * 3)) as Array<gauge>
-	const validKeysForLock: Array<{ lock: gauge, validKeys: Array<validKeyWithOffset> }> = new Array<{ lock: gauge, validKeys: Array<validKeyWithOffset> }>();
 
 	var errorMessage: Array<string> = new Array<string>();
 	var invalid = false;
@@ -46,78 +45,60 @@ export default function Solve(): [boolean, Array<string>, Array<finalKey>?] {
 	const lockMessage = "lock layers: " + locksWithMissingCutputs + " are missing cutouts, please add at least 1 cutout per layer"
 	const keyMessage = "keys: " + keysWithMissingPins + " are missing pins, please add at least 1 pin per key"
 
-	errorMessage.push(lockMessage, keyMessage)
+	if (locksWithMissingCutputs.length > 0) {
+		errorMessage.push(lockMessage)
+	}
+
+	if (keysWithMissingPins.length > 0) {
+		errorMessage.push(keyMessage)
+	}
+
 
 	if (invalid) {
 		return [false, errorMessage]
 	}
 
-	for (const lock of locksToUse) {
-		const validkeys: Array<validKeyWithOffset> = new Array<validKeyWithOffset>;
-		for (const key of keysToUse) {
-			const validOffsets = []
-			const firstPinPosition = key.getFirstPin();
-			for (const position of lock.getPins()) {
-				let offset = position - firstPinPosition
-				const newKey = key.getPins().map(v => (v + offset) % 32).sort((a, b) => a - b)
-				if (DoesFit(newKey, lock.getPins())) {
-					validOffsets.push(offset);
-				}
-			}
-			if (validOffsets.length > 0) {
-				validkeys.push({ key: key, validPositions: validOffsets } as validKeyWithOffset);
-			}
-		}
+	const keys = bruteForceUnlock(locksToUse, keysToUse);
 
-		validKeysForLock.push({ lock: lock, validKeys: validkeys })
-	}
-	const [success, keys] = bruteForceKeys(validKeysForLock, 0, validKeysForLock[0].lock.getPins());
-
-	if (!success) {
+	if (keys === undefined) {
 		return [false, ["No solution found please try again"]]
 	}
-	return [true, [], keys.reverse()]
+	return [true, [], keys]
 }
 
-function DoesFit(arr1: Array<number>, arr2: Array<number>): boolean {
-	return arr1.every(v => arr2.includes(v));
-}
 
-function bruteForceKeys(locksWithValidKeys: Array<{ lock: gauge, validKeys: Array<validKeyWithOffset> }>, index: number, remainingPins: Array<number>): [boolean, Array<finalKey>] {
-	const validKeys = locksWithValidKeys[index].validKeys;
 
-	function checkKeyOffsets(validKey: validKeyWithOffset): [boolean, Array<finalKey>] {
-		for (const offset of validKey.validPositions) {
-			const shiftedKey = validKey.key.getPins().map(k => (k + offset) % 32).sort((a, b) => a - b);
-			if (shiftedKey.every(k => remainingPins.includes(k))) {
-				var remainingLockPins = remainingPins.filter(l => !shiftedKey.includes(l));
-				var nextIndex = index
-				if (remainingLockPins.length === 0) {
-					nextIndex += 1
-					if (locksWithValidKeys[nextIndex] === undefined) {
-						return [true, [{ key: validKey.key, offset: offset } as finalKey]]
+function bruteForceUnlock(lockLayers: Array<gauge>, keys: Array<gauge>): Array<finalKey> | undefined {
+	function attemptUnlock(lockLayerIndex: number, currentLayer: Array<number>, remainingKeys: Array<gauge>, usedKeys: Array<finalKey>): Array<finalKey> | undefined {
+		if (lockLayerIndex >= lockLayers.length) {
+			return usedKeys
+		}
+
+		if (currentLayer.length === 0) {
+			const nextlockLayer = lockLayers[lockLayerIndex + 1]
+			const nextPins = nextlockLayer !== undefined ? nextlockLayer.getPins() : [];
+			return attemptUnlock(lockLayerIndex + 1, nextPins, remainingKeys, usedKeys)
+		}
+
+		for (let keyIndex = 0; keyIndex < remainingKeys.length; keyIndex++) {
+			const key = remainingKeys[keyIndex];
+			for (const cutout of currentLayer) {
+				const offset = cutout - key.getFirstPin();
+				const offsetKeyPins = key.getPins().map(k => (k + offset + 32) % 32);
+				if (offsetKeyPins.every(k => currentLayer.includes(k))) {
+					const remainingLock = currentLayer.filter(g => !offsetKeyPins.includes(g))
+
+					const nextRemainingKeys = [...remainingKeys];
+					nextRemainingKeys.splice(keyIndex, 1);
+					const result = attemptUnlock(lockLayerIndex, remainingLock, nextRemainingKeys, [...usedKeys, { key: key, offset: offset } as finalKey])
+
+					if (result !== undefined) {
+						return result;
 					}
-					remainingLockPins = locksWithValidKeys[nextIndex].lock.getPins();
 				}
-				validKey.key.setUsed(true)
-				const [success, keys] = bruteForceKeys(locksWithValidKeys, nextIndex, remainingLockPins);
-				if (success) {
-					keys.push({ key: validKey.key, offset: offset } as finalKey)
-					return [true, keys]
-				}
-				validKey.key.setUsed(false);
 			}
 		}
-		return [false, []]
 	}
 
-	for (const validKey of validKeys) {
-		if (!validKey.key.isUsed()) {
-			const [success, keys] = checkKeyOffsets(validKey);
-			if (success) {
-				return [true, keys]
-			}
-		}
-	}
-	return [false, []]
+	return attemptUnlock(0, lockLayers[0].getPins(), keys, [])
 }

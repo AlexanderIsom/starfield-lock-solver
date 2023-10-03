@@ -63,6 +63,7 @@ const reset = () => {
 }
 
 const startSolve = () => {
+	// solve();
 	const [success, ErrorMessages, result] = solve();
 
 	if (!success) {

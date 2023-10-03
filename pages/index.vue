@@ -81,6 +81,7 @@ const closeSolutionModal = () => {
 
 const closeErrorMessageModal = () => {
 	isErrorMessageModalOpen.value = false;
+	
 }
 
 </script>

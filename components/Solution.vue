@@ -9,7 +9,7 @@ const props = defineProps<{
 }>();
 </script>
 <template>
-  <UModal v-model="props.isOpen" prevent-close :ui="{ width: 'sm:max-w-7xl', ring: '', margin: 'm-8' }">
+  <UModal v-model="props.isOpen" prevent-close :ui="{ width: 'w-fit sm:max-w-7xl ', ring: '', margin: 'm-8' }">
     <UCard>
       <template #header>
         <div class="flex items-end justify-center">

@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 useSeoMeta({
   title: 'Starfield lockpick solver',
   ogTitle: 'Starfield lockpick solver',

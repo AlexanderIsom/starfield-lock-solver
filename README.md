@@ -1,30 +1,4 @@
-# Nuxt 3 Minimal Starter
-
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
-
-## Setup
-
-Make sure to install the dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-```
+# Starfield lock solver
 
 ## TODO
 
@@ -33,3 +7,23 @@ pnpm run dev
 - [ ] make mobile compatible
 - [ ] add better support for smaller resolution screens
 - [ ] add a step by step walkthrough
+
+## Details
+
+The algorithm works by doing "the least possible" solves
+it finds all the keys and creates a list of possible positions it can go
+this reduces the number of combinations we have to check from millions to under or around 50
+
+## Setup
+
+Make sure to install the dependencies:
+
+```bash
+npm install
+```
+
+Start the development server on `http://localhost:3000`:
+
+```bash
+npm run dev
+```

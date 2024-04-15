@@ -10,8 +10,8 @@
 
 ## Details
 
-The algorithm works by doing "the least possible" solves
-it finds all the keys and creates a list of possible positions it can go
+The algorithm works by doing "the least possible" solves.</br>
+After inputting all the keys a list of possible positions is created for each.</br>
 this reduces the number of combinations we have to check from millions to under or around 50
 
 ## Setup

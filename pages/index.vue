@@ -50,16 +50,6 @@ import { finalKey } from "../util/solve";
 import { difficulty } from "~/util/difficultyUtil";
 import solve from "~/util/solve";
 
-useHead({
-	script: [
-		{
-			src: "https://cloud.umami.is/script.js",
-			defer: true,
-			"data-website-id": "f798d17d-8a6c-4724-b044-fcc3b0cc6b6b",
-		},
-	],
-});
-
 const items = store.keys;
 const isSolutionModalOpen = ref(false);
 const solutionKeys = ref<Array<finalKey>>();

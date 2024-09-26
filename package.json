@@ -12,7 +12,8 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "autoprefixer": "^10.4.16",
-    "nuxt": "^3.7.3",
+    "nuxt": "^3.13.2",
+    "nuxt-umami": "^3.0.1",
     "postcss": "^8.4.30",
     "sass": "^1.68.0",
     "sass-loader": "^13.3.2"
